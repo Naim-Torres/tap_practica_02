@@ -115,7 +115,7 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
     public void actionPerformed(ActionEvent ae) {
         Object	prod=	ae.getSource(); //	Productor	del	evento
         if(prod == verificar)
-        {	String	mensaje="Hola";	//	agrega	el	texto	necesario, como	se	muestra en	el apartado	de	especificación
+        {	String	mensaje="Hola";	//	agrega	el	texto	necesario, como	se	muestra en	el apartado	de	especificacion
                 JOptionPane.showMessageDialog(this,mensaje);
         }
     }
