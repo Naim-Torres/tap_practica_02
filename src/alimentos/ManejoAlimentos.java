@@ -3,6 +3,7 @@ package alimentos;
 import sun.font.TrueTypeFont;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -22,13 +23,21 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
 
     private Alimentos alimentos[];
 
+    private final String TIEMPOCOMIDA[] = {"Desayuno","Comida","Cena"};
+    private JCheckBox eleccionTiempo[];
+    private DefaultListModel <Alimentos> modelosListas[];
+    private JList tiempos[];
+    private JComboBox alimento;
+    private JButton aceptar; //para agregar un alimento
+
     public ManejoAlimentos (){
 
-        super("Práctica	2");
+        super("Práctica 2");
         Container panel	=	getContentPane();
         JTabbedPane	panelPrincipal	=	new	JTabbedPane();
+        cargarDatos();
         panelPrincipal.addTab("Conociendo	los	alimentos	",panelConociendo());
-        //panelPrincipal.addTab("Elección	de	alimentos",	panelAlimentos());
+        panelPrincipal.addTab("Elección	de	alimentos",	panelAlimentos());
         //	panelPrincipal.addTab("Clasificación	de	alimentos",	grafico);
         panel.add(panelPrincipal);
         this.setSize(750,400);
@@ -36,7 +45,6 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        cargarDatos();
     }
 
     public JPanel panelConociendo(){
@@ -65,9 +73,9 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
 
         pKcalTipoAlim	=	new	JPanel[TIPO_ALIMENTO.length];//Atributo
         JPanel	pGpoTipoAlim	=	new	JPanel(); //	sirve	para	agrupar	a	los	JSlider	y	las	JLabel	(barras)
-        pGpoTipoAlim.setLayout(new BorderLayout()); //	Te	toca	especificar	el	tipo	de	distribución(administrador)
-        racTipoAlim	=	new	JSlider[TIPO_ALIMENTO.length];
-        kCalTipoAlim		=	new	JLabel[TIPO_ALIMENTO.length];
+        pGpoTipoAlim.setLayout(new GridLayout()); //	Te	toca	especificar	el	tipo	de	distribución(administrador)
+        racTipoAlim	 =	new	JSlider[TIPO_ALIMENTO.length];
+        kCalTipoAlim =	new	JLabel[TIPO_ALIMENTO.length];
         verificar = new JButton("Verifica proporciòn"); // Debes	declararlo como atributo
         kilocalorias	=	new	JLabel("Total de kilocalorias: 0");
         panelSur.add(kilocalorias);
@@ -94,15 +102,15 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
             kCalTipoAlim[ta].setBackground(COLORES[ta]);
             kCalTipoAlim[ta].setOpaque(true);
             kCalTipoAlim[ta].setVerticalAlignment(SwingConstants.CENTER);
-            kCalTipoAlim[ta].setHorizontalAlignment(SwingConstants.CENTER);
+            kCalTipoAlim[ta].setHorizontalAlignment(SwingConstants.HORIZONTAL);
 
             pKcalTipoAlim[ta].setLayout(new BorderLayout());
-            pKcalTipoAlim[ta].setPreferredSize(kCalTipoAlim[ta].getPreferredSize());
+            pKcalTipoAlim[ta].setPreferredSize(new Dimension(51,0));
             pKcalTipoAlim[ta].add(kCalTipoAlim[ta]);
 
             pDatos.add(tit,BorderLayout.NORTH);
-            pDatos.add(racTipoAlim[ta],BorderLayout.WEST);
-            pDatos.add(pKcalTipoAlim[ta],BorderLayout.CENTER);
+            pDatos.add(racTipoAlim[ta],BorderLayout.CENTER);
+            pDatos.add(pKcalTipoAlim[ta],BorderLayout.EAST);
             pGpoTipoAlim.add(pDatos);
 
             racTipoAlim[ta].addChangeListener(this);
@@ -141,7 +149,91 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
     }
 
 
-    //public JPanel panelAlimentos(){ }
+    public JPanel panelAlimentos(){
+
+        JPanel pAlimentos = new JPanel();
+        pAlimentos.setLayout(new BorderLayout());
+        JPanel panelCentro = new JPanel(); //Para las selección de alimentos y cuadross de verificacion
+        JPanel panelCheck = new JPanel(); //Para cuadros de verificación del tiempos de comidas
+        panelCheck.setLayout(new GridLayout(0,1));
+        panelCentro.setLayout(new BorderLayout());
+        JPanel panelSeleccion = new JPanel(); //Para la seleccion de los alimentos
+        JLabel titulo = new JLabel ("ELECCION DE ALIMENTOS Y ASIGNACION A UN TIEMPO PARA SU CONSUMO ");
+        titulo.setHorizontalAlignment(JLabel.CENTER);
+        JLabel tAlimento = new JLabel ("Elige alimento");
+        aceptar = new JButton("Aceptar");
+        JLabel tipoAli = new JLabel ("");
+        alimento = new JComboBox(alimentos); //creacion del cuadro combinado
+        tipoAli.setText(TIPO_ALIMENTO[0]); //se muestra el primero
+
+        JPanel panelTiempos = new JPanel();
+        panelTiempos.add(new JPanel());
+        panelSeleccion.add(tAlimento);
+        panelSeleccion.add(alimento);
+        panelSeleccion.add(tipoAli);
+        panelCentro.add(panelSeleccion, BorderLayout.NORTH);
+        panelCentro.add(creaPanelTiempos(),BorderLayout.CENTER);
+        pAlimentos.add(titulo,BorderLayout.NORTH);
+        pAlimentos.add(panelCentro, BorderLayout.CENTER);
+        panelCentro.add(creaListas(),BorderLayout.SOUTH);
+        return pAlimentos;
+    }
+
+    public JPanel creaPanelTiempos(){
+
+        JPanel tiempoAlimento = new JPanel();
+        tiempoAlimento.setLayout(new BorderLayout());
+        JLabel indicacion = new JLabel ("Selecciona el tiempo cuando deseas consumirlo");
+        indicacion.setHorizontalAlignment(JLabel.CENTER);
+        tiempoAlimento.add(indicacion,BorderLayout.NORTH);
+        JPanel eleccion = new JPanel();
+        aceptar = new JButton("Agregar");
+
+        eleccionTiempo = new JCheckBox[4];
+        int numAlimTie[] = new int[4];
+
+        eleccion.setLayout(new GridLayout(1,4));
+
+        for(int t=0; t < eleccionTiempo.length -1; t++){
+            eleccionTiempo[t] = new JCheckBox(TIEMPOCOMIDA[t]);
+            eleccion.add(eleccionTiempo[t]);
+            numAlimTie[t]=0;
+        }
+        eleccionTiempo[eleccionTiempo.length-1] = new JCheckBox("En todos");
+        eleccion.add(eleccionTiempo[eleccionTiempo.length-1]);
+
+        tiempoAlimento.add(aceptar,BorderLayout.EAST);
+
+        tiempoAlimento.add(eleccion, BorderLayout.CENTER);
+        return tiempoAlimento;
+    }
+
+    private JPanel creaListas(){
+        JPanel pListas = new JPanel();
+        JPanel listas = new JPanel();
+        JPanel numAlim = new JPanel();
+        tiempos = new JList[TIEMPOCOMIDA.length];
+        JLabel[] numAlimTiem = new JLabel[TIEMPOCOMIDA.length];
+        modelosListas = new DefaultListModel[TIEMPOCOMIDA.length];
+        GridLayout dList = new GridLayout(0, TIEMPOCOMIDA.length+1,5,0);
+        pListas.setLayout(new BorderLayout());
+        listas.setLayout(dList);
+        numAlim.setLayout(dList);
+        for(int t=0; t < tiempos.length; t++){
+            modelosListas[t] = new DefaultListModel();
+            tiempos[t] = new JList(modelosListas[t]);
+            listas.add(new JScrollPane(tiempos[t]));
+        }
+
+        for	(int t	= 0; t < tiempos.length; t++) {
+            numAlimTiem[t]= new JLabel();
+            numAlim.add(numAlimTiem[t]);
+        }
+
+        pListas.add(listas,BorderLayout.NORTH);
+        pListas.add(numAlim,BorderLayout.SOUTH);
+        return pListas;
+    }
 
     public static void main(String args[]){
         ManejoAlimentos alimentos = new ManejoAlimentos();
