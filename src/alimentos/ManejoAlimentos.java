@@ -102,10 +102,10 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
             kCalTipoAlim[ta].setBackground(COLORES[ta]);
             kCalTipoAlim[ta].setOpaque(true);
             kCalTipoAlim[ta].setVerticalAlignment(SwingConstants.CENTER);
-            kCalTipoAlim[ta].setHorizontalAlignment(SwingConstants.HORIZONTAL);
+            kCalTipoAlim[ta].setHorizontalAlignment(SwingConstants.CENTER);
 
             pKcalTipoAlim[ta].setLayout(new BorderLayout());
-            pKcalTipoAlim[ta].setPreferredSize(new Dimension(51,0));
+            pKcalTipoAlim[ta].setPreferredSize(new Dimension(60,0));
             pKcalTipoAlim[ta].add(kCalTipoAlim[ta]);
 
             pDatos.add(tit,BorderLayout.NORTH);
@@ -131,8 +131,36 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
     public void actionPerformed(ActionEvent ae) {
         Object	prod=	ae.getSource(); //	Productor	del	evento
         if(prod == verificar)
-        {	String	mensaje="Hola";	//	agrega	el	texto	necesario, como	se	muestra en	el apartado	de	especificacion
-                JOptionPane.showMessageDialog(this,mensaje);
+        {
+            String	mensaje="";//	agrega	el	texto	necesario, como	se	muestra en	el apartado	de	especificacion
+            if(racTipoAlim[0].getValue() == 0){
+                mensaje += "\nAgrega un mayor número de raciones de verduras";
+            }else{
+                mensaje += "\nVegetales deben ser de demanda libre, mientras más alto sean las reciones es mejor";
+            }
+            if(racTipoAlim[1].getValue() == 0){
+                mensaje += "\nAgrega un mayor número de raciones de frutas";
+            }else{
+                mensaje += "\nFrutas deben ser de demanda libre, mientras más alto sean las reciones es mejor";
+            }
+            if(racTipoAlim[2].getValue() < 2){
+                mensaje += "\nCereales deben de tener un número de raciones de dos o más";
+            }else{
+                mensaje += "\nPuedes agregar mas raciones de cereales";
+            }
+            if(racTipoAlim[3].getValue() < 2){
+                mensaje += "\nLeguminosas deben de tener un número de raciones de dos o más";
+            }else{
+                mensaje += "\nPuedes agregar mas raciones de leguminosas";
+            }
+            if(racTipoAlim[4].getValue() < 1){
+                mensaje += "Poca cantidad de alimentos de origen animal";
+            }else if( racTipoAlim[4].getValue() > 4){
+                mensaje += "\nExceso de alimentos de origen animal";
+            }else if(racTipoAlim[4].getValue() >= 1 && racTipoAlim[4].getValue() <= 4){
+                mensaje += "\nPorciones correctas de alimentos de origen animal";
+            }
+            JOptionPane.showMessageDialog(this,mensaje);
         }
     }
     @Override
@@ -140,12 +168,14 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
         int totalkc = 0;
         for(int ta=0; ta <COLORES.length; ta++){
             int base = (racTipoAlim[ta].getHeight()-racTipoAlim[ta].getValue()*KCAL_TIPO_ALIM[ta])*racTipoAlim[ta].getHeight()/racTipoAlim[ta].getHeight();
-            kCalTipoAlim[ta].setBounds(0,base,60,racTipoAlim[ta].getHeight()*racTipoAlim[ta].getValue()*KCAL_TIPO_ALIM[ta]/racTipoAlim[ta].getHeight());
+            int altura = racTipoAlim[ta].getHeight()*racTipoAlim[ta].getValue()*KCAL_TIPO_ALIM[ta]/racTipoAlim[ta].getHeight();
+            if(racTipoAlim[ta].getValue()*KCAL_TIPO_ALIM[ta] <= racTipoAlim[ta].getHeight())
+                kCalTipoAlim[ta].setBounds(0, base, 60, altura);
             kCalTipoAlim[ta].setText(""+racTipoAlim[ta].getValue()*KCAL_TIPO_ALIM[ta]+"-KC");
             totalkc += racTipoAlim[ta].getValue()*KCAL_TIPO_ALIM[ta];
+            kCalTipoAlim[ta].repaint();
         }
         kilocalorias.setText("Total KC: "+totalkc+" ");
-        this.repaint();
     }
 
 
