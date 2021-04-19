@@ -20,6 +20,8 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
     private JLabel kilocalorias; //Para mostrar el valor de las kilocalorias
     private JButton verificar;
 
+    private Alimentos alimentos[];
+
     public ManejoAlimentos (){
 
         super("Práctica	2");
@@ -33,6 +35,8 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
         this.setLocation(200,200);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        cargarDatos();
     }
 
     public JPanel panelConociendo(){
@@ -45,20 +49,23 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
         panelSuperior.setLayout(new	BorderLayout());
 
         JPanel	panelCentro		=	new	JPanel();
+        panelCentro.setLayout(new GridLayout());
+
         JPanel	panelSur	    =	new	JPanel();
         JPanel	panelTitulo		=	new	JPanel();
         JPanel	panelEncabezados=	new	JPanel();
-        panelTitulo.setLayout(new	GridLayout(0,1));
+        panelTitulo.setLayout(new GridLayout(0,1));
         JLabel	enc1=	new	JLabel("CONOCIMIENTO DE LAS KILOCALORIAS APORTADAS	POR	RACIONES POR TIPO DE ALIMENTO");
         JLabel	enc2=	new	JLabel("Elige el número las raciones de cada tipo de alimento que consideres debes	de consumir");
 
-        panelTitulo.add(enc1);
-        panelTitulo.add(enc2);
-        panelSuperior.add(panelTitulo,BorderLayout.CENTER);
+        panelSuperior.add(enc1,BorderLayout.NORTH);
+        panelSuperior.add(panelEncabezados,BorderLayout.WEST);
+        panelSuperior.add(panelTitulo, BorderLayout.CENTER);
+        panelSuperior.add(enc2,BorderLayout.SOUTH);
 
         pKcalTipoAlim	=	new	JPanel[TIPO_ALIMENTO.length];//Atributo
         JPanel	pGpoTipoAlim	=	new	JPanel(); //	sirve	para	agrupar	a	los	JSlider	y	las	JLabel	(barras)
-        pGpoTipoAlim.setLayout(new GridLayout()); //	Te	toca	especificar	el	tipo	de	distribución(administrador)
+        pGpoTipoAlim.setLayout(new BorderLayout()); //	Te	toca	especificar	el	tipo	de	distribución(administrador)
         racTipoAlim	=	new	JSlider[TIPO_ALIMENTO.length];
         kCalTipoAlim		=	new	JLabel[TIPO_ALIMENTO.length];
         verificar = new JButton("Verifica proporciòn"); // Debes	declararlo como atributo
@@ -67,7 +74,7 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
         panelSur.add(verificar);
         //panelSur.add(reAlimentacion);
 
-        for(int ta=0; ta < TIPO_ALIMENTO.length; ta++ ){
+        for(int ta=0; ta < TIPO_ALIMENTO.length ; ta++ ){
             JPanel pDatos = new JPanel();
             pDatos.setLayout(new BorderLayout());
             JLabel tit = new JLabel(TIPO_ALIMENTO[ta]);
@@ -90,8 +97,8 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
             kCalTipoAlim[ta].setHorizontalAlignment(SwingConstants.CENTER);
 
             pKcalTipoAlim[ta].setLayout(new BorderLayout());
-            pKcalTipoAlim[ta].setPreferredSize(new Dimension(5,racTipoAlim[ta].getHeight()));
-            pKcalTipoAlim[ta].add(kCalTipoAlim[ta],BorderLayout.EAST);
+            pKcalTipoAlim[ta].setPreferredSize(kCalTipoAlim[ta].getPreferredSize());
+            pKcalTipoAlim[ta].add(kCalTipoAlim[ta]);
 
             pDatos.add(tit,BorderLayout.NORTH);
             pDatos.add(racTipoAlim[ta],BorderLayout.WEST);
@@ -99,9 +106,10 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
             pGpoTipoAlim.add(pDatos);
 
             racTipoAlim[ta].addChangeListener(this);
+
         }
         panelCentro.add(pGpoTipoAlim);
-        conocer.add(panelCentro,BorderLayout.CENTER);
+        conocer.add(panelCentro);
         conocer.add(panelSur,BorderLayout.SOUTH);
 
         verificar.addActionListener(this);
@@ -139,6 +147,32 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
         ManejoAlimentos alimentos = new ManejoAlimentos();
     }
 
+    private void cargarDatos(){
+
+        alimentos = new Alimentos[22];
+        alimentos[0] = new Alimentos("Zanahorias",0);
+        alimentos[1] = new Alimentos("Lechuga",0);
+        alimentos[2] = new Alimentos("Espinaca",0);
+        alimentos[3] = new Alimentos("Acelgas",0);
+        alimentos[4] = new Alimentos("Tomate",0);
+        alimentos[5] = new Alimentos("Platano",1);
+        alimentos[6] = new Alimentos("Naranja",1);
+        alimentos[7] = new Alimentos("Manzana",1);
+        alimentos[8] = new Alimentos("Melon",1);
+        alimentos[9] = new Alimentos("Arroz",2);
+        alimentos[10] = new Alimentos("Pan Blanco",2);
+        alimentos[11] = new Alimentos("Avena",2);
+        alimentos[12] = new Alimentos("Tortilla",2);
+        alimentos[13] = new Alimentos("Frijol",3);
+        alimentos[14] = new Alimentos("Cacahuate",3);
+        alimentos[15] = new Alimentos("Haba",3);
+        alimentos[16] = new Alimentos("Lenteja",3);
+        alimentos[17] = new Alimentos("Muslo de pollo",4);
+        alimentos[18] = new Alimentos("Filete de Pescado",4);
+        alimentos[19] = new Alimentos("Huevo",4);
+        alimentos[20] = new Alimentos("Carne de Res",4);
+        alimentos[21] = new Alimentos("Chuleta de cerdo",4);
+    }
 
 
 }
