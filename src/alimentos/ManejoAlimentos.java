@@ -38,11 +38,11 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
     public ManejoAlimentos (){
 
         super("Práctica 2");
-        Container panel	=	getContentPane();
-        JTabbedPane	panelPrincipal	=	new	JTabbedPane();
+        Container panel	= getContentPane();
+        JTabbedPane	panelPrincipal = new JTabbedPane();
         cargarDatos();
-        panelPrincipal.addTab("Conociendo	los	alimentos	",panelConociendo());
-        panelPrincipal.addTab("Elección	de	alimentos",	panelAlimentos());
+        panelPrincipal.addTab("Conociendo los alimentos ",panelConociendo());
+        panelPrincipal.addTab("Elección de	alimentos",	panelAlimentos());
         //	panelPrincipal.addTab("Clasificación	de	alimentos",	grafico);
         panel.add(panelPrincipal);
         this.setSize(750,350);
@@ -55,21 +55,21 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
     public JPanel panelConociendo(){
 
         //panel	de	conociendo	los	alimentos
-        JPanel	conocer	=	new	JPanel();
+        JPanel conocer	= new JPanel();
         conocer.setLayout(new BorderLayout());
 
-        JPanel	panelSuperior =	new	JPanel();
+        JPanel panelSuperior = new JPanel();
         panelSuperior.setLayout(new	BorderLayout());
 
-        JPanel	panelCentro	 = new	JPanel();
+        JPanel panelCentro = new JPanel();
         panelCentro.setLayout(new GridLayout());
 
-        JPanel	panelSur = new JPanel();
-        JPanel	panelTitulo	= new JPanel();
-        JPanel	panelEncabezados= new JPanel();
+        JPanel panelSur = new JPanel();
+        JPanel panelTitulo	= new JPanel();
+        JPanel panelEncabezados= new JPanel();
         panelTitulo.setLayout(new GridLayout(0,1));
-        JLabel	enc1= new JLabel("CONOCIMIENTO DE LAS KILOCALORIAS APORTADAS	POR	RACIONES POR TIPO DE ALIMENTO");
-        JLabel	enc2= new JLabel("Elige el número las raciones de cada tipo de alimento que consideres debes	de consumir");
+        JLabel enc1= new JLabel("CONOCIMIENTO DE LAS KILOCALORIAS APORTADAS	POR	RACIONES POR TIPO DE ALIMENTO");
+        JLabel enc2= new JLabel("Elige el número las raciones de cada tipo de alimento que consideres debes	de consumir");
 
         panelSuperior.add(enc1,BorderLayout.NORTH);
         panelSuperior.add(panelEncabezados,BorderLayout.WEST);
@@ -134,13 +134,17 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
     }
     @Override
     public void actionPerformed(ActionEvent ae) {
-        boolean seleccion = true;
-        for(int t=0; t < eleccionTiempo.length-1;t++){
-            seleccion = true && eleccionTiempo[t].isSelected();
-            eleccionTiempo[eleccionTiempo.length-1].setSelected(seleccion);
-        }
+        Object	prod= ae.getSource(); //	Productor	del	evento
 
-        Object	prod=	ae.getSource(); //	Productor	del	evento
+        boolean seleccion = true;
+        int aux = 0;
+        for(int t=0; t < eleccionTiempo.length-1;t++) {
+            if(eleccionTiempo[t].isSelected())
+                aux++;
+            seleccion = aux==3 && eleccionTiempo[t].isSelected();
+        }
+        eleccionTiempo[eleccionTiempo.length-1].setSelected(seleccion);
+
         if(prod == verificar)
         {
             String	mensaje="";//	agrega	el	texto	necesario, como	se	muestra en	el apartado	de	especificacion
@@ -177,9 +181,24 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
             Alimentos aliSel = (Alimentos) alimento.getSelectedItem();
             for(int t=0; t< eleccionTiempo.length-1; t++ ){
                 if(eleccionTiempo[t].isSelected()){
-                    modelosListas[t].addElement(aliSel);
-                    numAlimTiem[t].setText("Num.Alim.:"+(++numAlimTie[t]));
-                    //numTipoAli[aliSel.tipo()]++;
+                    boolean contenido = false;
+
+                    if(modelosListas[t].isEmpty() == false) {
+                        for (int i = 0; i <= modelosListas[t].size()-1; i++){
+                            System.out.println("hola 21");
+                            if (modelosListas[t].elementAt(i).alimento() == aliSel.alimento()) {
+                                contenido = true;
+
+                            }
+                            System.out.println("hola 22");
+                        }
+                        System.out.println("hola");
+                    }
+                    if(contenido == false) {
+                        modelosListas[t].addElement(aliSel);
+                        numAlimTiem[t].setText("Num.Alim.:" + (++numAlimTie[t]));
+                        //numTipoAli[aliSel.tipo()]++;
+                    }
                 }
             }
         }
@@ -251,7 +270,7 @@ public class ManejoAlimentos extends JFrame implements ActionListener, ChangeLis
         aceptar = new JButton("Agregar");
 
         eleccionTiempo = new JCheckBox[4];
-        numAlimTie = new int[4];
+        numAlimTie = new int[3];
 
         eleccion.setLayout(new GridLayout(1,4));
 
